@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3e043d4b-e6bb-435e-b8bc-f5e43da3481a" name="host" url="http://ddns.rockchen26sh.top">
+        <fileTransfer host="ddns.rockchen26sh.top" port="11002" rootFolder="/home/liunx" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="11002" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
