@@ -47,4 +47,48 @@ def inference(images):
         print_activations(conv2)
 
     with tf.name_scope('lrn2') as scope:
-        lrn2 = tf.nn.lrn(conv2, )
+        lrn2 = tf.nn.lrn(conv2, 4, bias=1.0, alpha=0.001/9, beta=0.75, name='lrn2')
+        pool2 = tf.nn.max_pool(lrn2, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1],
+                               padding='VALID', name='pool2')
+        print_activations(pool2)
+
+    with tf.name_scope('conv3') as scope:
+        kernel = tf.Variable(tf.truncated_normal([3, 3, 192, 384],
+                                                 dtype=tf.float32, stddev=1e-1), name='weights')
+        conv = tf.nn.conv2d(pool2, kernel, [1,1,1,1], padding='SAME')
+        biases = tf.Variable(tf.constant(0.0, shape=[384], dtype=tf.float32),
+                             trainable=True, name='biases')
+        bias = tf.nn.bias_add(conv, bias)
+        conv3 = tf.nn.relu(bias, name=scope)
+        parameters += [kernel, biases]
+        print_activations(conv3)
+
+    with tf.name_scope('conv4') as scope:
+        kernel = tf.Variable(tf.truncated_normal([3, 3, 384, 256],
+                                                 dtype=tf.float32, stddev=1e-1), name='weights')
+        conv = tf.nn.conv2d(pool2, kernel, [1,1,1,1], padding='SAME')
+        biases = tf.Variable(tf.constant(0.0, shape=[256], dtype=tf.float32),
+                             trainable=True, name='biases')
+        bias = tf.nn.bias_add(conv, bias)
+        conv4 = tf.nn.relu(bias, name=scope)
+        parameters += [kernel, biases]
+        print_activations(conv4)
+
+    with tf.name_scope('conv5') as scope:
+        kernel = tf.Variable(tf.truncated_normal([3, 3, 256, 256],
+                                                 dtype=tf.float32, stddev=1e-1), name='weights')
+        conv = tf.nn.conv2d(pool2, kernel, [1, 1, 1, 1], padding='SAME')
+        biases = tf.Variable(tf.constant(0.0, shape=[256], dtype=tf.float32),
+                             trainable=True, name='biases')
+        bias = tf.nn.bias_add(conv, bias)
+        conv5 = tf.nn.relu(bias, name=scope)
+        parameters += [kernel, biases]
+        print_activations(conv5)
+
+    pool5 = tf.nn.max_pool(conv5, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1],
+                           padding='VALID', name='pool5')
+    print_activations(pool5)
+
+    return pool5, parameters
+
+
